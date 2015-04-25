@@ -36,6 +36,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrapform',
+    'debug_toolbar',
     'common',
 )
 
@@ -95,5 +97,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    os.getcwd() + STATIC_URL
+    os.getcwd() + STATIC_URL,
 )

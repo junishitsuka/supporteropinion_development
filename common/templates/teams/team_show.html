@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 
-{% block title %}チーム一覧{% endblock title %}
+{% block title %}チーム詳細{% endblock title %}
 
 {% block extrahead %}
 <style>
@@ -26,9 +26,7 @@
         {% for team in teams %}
         <tr>
             <td>{{ team.team_id }}</td>
-            <td>
-                <a href="{% url 'common:team_show' team_id=team.team_id %}">{{ team.name }}</a>
-            </td>
+            <td>{{ team.name }}</td>
             <td>{{ team.tweet_count }}</td>
             <td>{{ team.oldest }} ~ {{ team.newest }}</td>
             {# <td> #}

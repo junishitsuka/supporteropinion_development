@@ -1,5 +1,7 @@
+# coding: utf-8
+
 from django.contrib import admin
-from common.models import Tweet
 
 # Register your models here.
-admin.site.register(Tweet)
+# admin.site.register(Team)
+# AdminはMySQLなのでmongoDBのmodelを使うのは困難
