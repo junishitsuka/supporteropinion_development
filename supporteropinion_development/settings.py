@@ -55,10 +55,22 @@ WSGI_APPLICATION = 'supporteropinion_development.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
+from mongoengine import connect
+connect('supporteropinion_development',
+    host='49.212.172.91',
+    port=27017
+    # 'user',
+    # 'pass'
+)
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'supporteropinion_development',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': 3306
     }
 }
 
