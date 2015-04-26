@@ -31,19 +31,27 @@ class Tweets(Document):
 
     @classmethod
     def count_team_tweet(self, team_id):
-        return self.objects.filter(team_id=team_id).count()
+        return self.objects(team_id=team_id).count()
 
     @classmethod
     def oldest_tweet_time(self, team_id):
-        tweet = self.objects.filter(team_id=team_id).order_by('+tweet_id').limit(1)
+        tweet = self.objects(team_id=team_id).order_by('+tweet_id').limit(1)
         time_ja = parse(tweet[0].created_at) + timedelta(hours=9)
         return time_ja.strftime('%Y-%m-%d %H:%M:%S')
 
     @classmethod
     def newest_tweet_time(self, team_id):
-        tweet = self.objects.filter(team_id=team_id).order_by('-tweet_id').limit(1)
+        tweet = self.objects(team_id=team_id).order_by('-tweet_id').limit(1)
         time_ja = parse(tweet[0].created_at) + timedelta(hours=9)
         return time_ja.strftime('%Y-%m-%d %H:%M:%S')
+
+    @classmethod
+    def find_positive_tweet(self, team_id, limit):
+        return self.objects(team_id=team_id).order_by('-p_count').limit(limit)
+
+    @classmethod
+    def find_negative_tweet(self, team_id, limit):
+        return self.objects(team_id=team_id).order_by('-n_count').limit(limit)
  
 class Team(Document):
     _id = StringField(required=True)

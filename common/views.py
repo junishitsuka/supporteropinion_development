@@ -18,14 +18,8 @@ def team_list(request):
         context_instance=RequestContext(request)
     )
 
-def team_edit(request, team_id=None):
-    return HttpResponse(u'書籍の編集')
-
-def team_delete(request, team_id=None):
-    return HttpResponse(u'書籍の編集')
-
 def team_show(request, team_id=None):
-    team = Team.objects.filter(team_id=team_id)
+    team = Team.objects(team_id=team_id)
     if not(team): raise Http404
 
     datecount = Datecount.find_datecount(team_id, '2015-04-17', '2015-04-25')
@@ -37,5 +31,18 @@ def team_show(request, team_id=None):
     return render_to_response(
         'teams/team_show.html',
         {'team': team[0], 'datelist': datelist, 'countlist': countlist, 'trendwords': trendwords},
+        context_instance=RequestContext(request)
+    )
+
+def team_tweet(request, team_id=None):
+    team = Team.objects(team_id=team_id)
+    if not(team): raise Http404
+
+    positive_tweet = Tweets.find_positive_tweet(team_id, 3)
+    negative_tweet = Tweets.find_negative_tweet(team_id, 3)
+
+    return render_to_response(
+        'teams/team_tweet.html',
+        {'team': team[0], 'positive_tweet': positive_tweet, 'negative_tweet': negative_tweet},
         context_instance=RequestContext(request)
     )
