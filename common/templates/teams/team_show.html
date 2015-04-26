@@ -2,39 +2,114 @@
 
 {% block title %}チーム詳細{% endblock title %}
 
+{% block js %}
+<script>
+$(function() {
+    var chart;
+    $(document).ready(function() {
+        var chartOptions = {
+            chart: {
+                renderTo: 'datecount', // id
+                type: 'area',
+                marginRight: 130,
+                marginBottom: 25
+            },
+            title: {
+                text: '日付別ツイート数',
+                x: -20,
+            },
+            subtitle: {
+            },
+            xAxis: {
+                type: 'datetime',
+                categories: {{ datelist | safe }},
+            },
+            yAxis: {
+                title: {
+                    text: 'ツイート数'
+                },
+                plotLines: [{
+                    min: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function() {
+                    return this.series.name + ' ' + this.x + ' ' + this.y
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -10,
+                y: 100,
+                borderWidth: 0
+            },
+            series: [{
+                name: "日別ツイート数",
+                data: {{ countlist | safe }}
+            }]
+        };
+        chart = new Highcharts.Chart(chartOptions);
+    });
+});
+</script>
+{% endblock %}
+
 {% block extrahead %}
 <style>
     table {
         margin-top: 8px;
     }
+    #datecount {
+        margin-top: 100px;
+    }
+    #trend {
+        margin-top: 100px;
+    }
+    .date {
+        width: 20%;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<h3 class="page-header">チーム一覧</h3>
-{# <a href="{% url 'common:team_add' %}" class="btn btn-default btn-sm">追加</a> #}
+<h3 class="page-header">チーム詳細 | {{ team.name }}</h3>
+
 <table class="table table-striped table-bordered">
     <thead>
         <tr>
             <th>ID</th>
             <th>チーム名</th>
-            <th>総ツイート数</th>
-            <th>収集期間</th>
         </tr>
     </thead>
     <tbody>
-        {% for team in teams %}
         <tr>
             <td>{{ team.team_id }}</td>
             <td>{{ team.name }}</td>
-            <td>{{ team.tweet_count }}</td>
-            <td>{{ team.oldest }} ~ {{ team.newest }}</td>
-            {# <td> #}
-            {#     <a href="{% url 'common:team_edit' team_id=team.team_id %}" class="btn btn-default btn-sm">修正</a> #}
-            {#     <a href="{% url 'common:team_delete' team_id=team.team_id %}" class="btn btn-default btn-sm">削除</a> #}
-            {# </td> #}
         </tr>
-        {% endfor %}
     </tbody>
 </table>
+
+<div id="datecount"></div>
+
+<table class="table table-striped table-bordered" id="trend">
+    <thead>
+        <tr>
+            <th class="date">日付</th>
+            <th class="word">トレンドワード</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for word in trendwords %}
+        <tr>
+            <td class="date">{{ word.date }}</td>
+            <td class="word">{{ word.words }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
 {% endblock content %}

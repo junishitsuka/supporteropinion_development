@@ -2,8 +2,8 @@
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponse
-from common.models import Team, Tweets
+from django.http import HttpResponse, Http404
+from common.models import Team, Tweets, Datecount, Words
 
 # Create your views here.
 def team_list(request):
@@ -25,9 +25,17 @@ def team_delete(request, team_id=None):
     return HttpResponse(u'書籍の編集')
 
 def team_show(request, team_id=None):
-    print team_id
+    team = Team.objects.filter(team_id=team_id)
+    if not(team): raise Http404
+
+    datecount = Datecount.find_datecount(team_id, '2015-04-17', '2015-04-25')
+    datelist = [(d.date).encode('utf8') for d in datecount]
+    countlist = [d.count for d in datecount]
+
+    trendwords = Words.find_trendwords(team_id, '2015-04-17', '2015-04-25')
+
     return render_to_response(
         'teams/team_show.html',
-        {'teams': teams},
+        {'team': team[0], 'datelist': datelist, 'countlist': countlist, 'trendwords': trendwords},
         context_instance=RequestContext(request)
     )

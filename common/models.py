@@ -1,5 +1,7 @@
+# coding: utf8
+
 from django.db import models
-from mongoengine import Document, StringField, IntField, signals
+from mongoengine import Document, StringField, IntField, signals, FloatField, ListField
 from dateutil.parser import parse
 from dateutil.relativedelta import *
 from datetime import timedelta
@@ -19,6 +21,13 @@ class Tweets(Document):
     team_id = IntField(required=True)
     retweet_count = IntField(required=True)
     favorite_count = IntField(required=True)
+    pn_rate = FloatField()
+    so_rate = FloatField()
+    so_rate = FloatField()
+    o_count = FloatField()
+    p_count = FloatField()
+    s_count = FloatField()
+    n_count = FloatField()
 
     @classmethod
     def count_team_tweet(self, team_id):
@@ -40,3 +49,24 @@ class Team(Document):
     _id = StringField(required=True)
     team_id = IntField(required=True)
     name = StringField(required=True)
+
+class Datecount(Document):
+    _id = StringField(required=True)
+    date = StringField(required=True)
+    count = IntField(required=True)
+    team_id = IntField(required=True)
+
+    @classmethod
+    def find_datecount(self, team_id, start_date, end_date):
+        return self.objects(team_id=team_id, date__gte=start_date, date__lte=end_date).order_by('+date')
+
+class Words(Document):
+    _id = StringField(required=True)
+    date = StringField(required=True)
+    team_id = IntField(required=True)
+    words = ListField(required=True)
+
+    @classmethod
+    def find_trendwords(self, team_id, start_date, end_date):
+        words = self.objects(team_id=team_id, date__gte=start_date, date__lte=end_date).order_by('-date')
+        return [{'date': w.date, 'words': ', '.join(w.words)} for w in words]
